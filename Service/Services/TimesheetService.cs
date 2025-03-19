@@ -9,11 +9,16 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    internal class TimesheetService
+    public class TimesheetService
     {
         private readonly CmapDBContext _context;
         private readonly Interfaces.ICsvService _csvService;
 
+        public TimesheetService(CmapDBContext context, Interfaces.ICsvService csvService)
+        {
+            _context = context;
+            _csvService = csvService;
+        }
 
         public async Task<ServiceResults<Timesheet>> CreateTimesheet(Timesheet timesheet)
         {
@@ -36,7 +41,16 @@ namespace Service.Services
             if (result.HasErrors)
                 return result;
 
+            var totalHours = _context.Timesheets.Where(x => x.UserName == timesheet.UserName && x.Date.Date == timesheet.Date.Date).Sum(x => x.HoursWorked);
+            timesheet.TotalHours = totalHours + timesheet.HoursWorked;
             _context.Add(timesheet);
+
+            var timesheets = _context.Timesheets.Where(x => x.UserName == timesheet.UserName && x.Date.Date == timesheet.Date.Date).ToList();
+            foreach (var ts in timesheets)
+            {
+                ts.TotalHours = timesheet.TotalHours;
+            }
+
             await _context.SaveChangesAsync();
 
             // Set the successful result

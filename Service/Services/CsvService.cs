@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Service.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Interfaces
+namespace Service.Services
 {
-    public interface ITimesheetService
+    public class CsvService : ICsvService
     {
     }
 }

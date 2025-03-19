@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    internal class CmapDBContext : DbContext
+    public class CmapDBContext : DbContext
     {
         public CmapDBContext(DbContextOptions<CmapDBContext> options): base(options) { }
 
