@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Service;
 using Service.Interfaces;
 using Service.Models;
@@ -20,7 +19,7 @@ namespace UnitTests
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
                 var currentDateTime = DateTime.Now;
-                var newTimesheet = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
+                var newTimesheet = DataHelper.CreateTimesheet1();
 
                 // Act: Create the timesheet
                 var result = await service.CreateTimesheet(newTimesheet);
@@ -39,7 +38,6 @@ namespace UnitTests
         [Fact]
         public async Task CreateTimesheet_AddTwoTimesheetsForTheSamePerson()
         {
-            // Arrange: Configure an in-memory database and create a fresh context
             var options = DBHelper.GetDBOptions();
 
             using (var context = new CmapDBContext(options))
@@ -47,13 +45,13 @@ namespace UnitTests
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
                 var currentDateTime = DateTime.Now;
-                var newTimesheet1 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
-                var newTimesheet2 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 6 };
+                var newTimesheet1 = DataHelper.CreateTimesheet1();
+                var newTimesheet2 = DataHelper.CreateTimesheet2();
 
-                // Act: Create the timesheet
+               
                 var result1 = await service.CreateTimesheet(newTimesheet1);
                 var result2 = await service.CreateTimesheet(newTimesheet2);
-                // Assert: Verify the timesheet is not null and has been assigned an Id
+
                 Assert.NotNull(result1.Result);
                 Assert.Equal("John Smith", result1.Result.UserName);
                 Assert.Equal("Project Alpha", result1.Result.Project);
@@ -67,7 +65,7 @@ namespace UnitTests
         [Fact]
         public async Task CreateTimesheet_AddTwoTimesheetsForTheSamePersonAndOneForDifferentPerson()
         {
-            // Arrange: Configure an in-memory database and create a fresh context
+
             var options = DBHelper.GetDBOptions();
 
             using (var context = new CmapDBContext(options))
@@ -75,15 +73,14 @@ namespace UnitTests
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
                 var currentDateTime = DateTime.Now;
-                var newTimesheet1 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
-                var newTimesheet2 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Beta", Description = "Developed new feature X", HoursWorked = 6 };
-                var newTimesheet3 = new Timesheet { UserName = "Jane Doe", Date = currentDateTime, Project = "Project Gamma", Description = "Developed new feature X", HoursWorked = 6 };
+                var newTimesheet1 = DataHelper.CreateTimesheet1();
+                var newTimesheet2 = DataHelper.CreateTimesheet2();
+                var newTimesheet3 = DataHelper.CreateTimesheet3();
 
-                // Act: Create the timesheet
                 var result1 = await service.CreateTimesheet(newTimesheet1);
                 var result2 = await service.CreateTimesheet(newTimesheet2);
                 var result3 = await service.CreateTimesheet(newTimesheet3);
-                // Assert: Verify the timesheet is not null and has been assigned an Id
+   
                 Assert.NotNull(result1.Result);
                 Assert.Equal("John Smith", result1.Result.UserName);
                 Assert.Equal("Project Alpha", result1.Result.Project);
@@ -115,14 +112,15 @@ namespace UnitTests
             {
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
-                var currentDateTime = DateTime.Now;
-                var newTimesheet1 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
-                var newTimesheet2 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Beta", Description = "Developed new feature X", HoursWorked = 6 };
-                var newTimesheet3 = new Timesheet { UserName = "Jane Doe", Date = currentDateTime, Project = "Project Gamma", Description = "Developed new feature X", HoursWorked = 6 };
+
+                var newTimesheet1 = DataHelper.CreateTimesheet1();
+                var newTimesheet2 = DataHelper.CreateTimesheet2();
+                var newTimesheet3 = DataHelper.CreateTimesheet3();
 
                 var result1 = await service.CreateTimesheet(newTimesheet1);
                 var result2 = await service.CreateTimesheet(newTimesheet2);
                 var result3 = await service.CreateTimesheet(newTimesheet3);
+
                 var result = await service.GetTimesheets();
  
                 Assert.NotNull(result.Result);
