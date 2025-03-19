@@ -104,7 +104,31 @@ namespace UnitTests
                 Assert.Equal(6, result3.Result.TotalHours);
             }
         }
+        
+        [Fact]
+        public async Task GetTimesheet_AddThreeTimesheetsAndGetThreeTimesheets()
+        {
 
+            var options = DBHelper.GetDBOptions();
 
+            using (var context = new CmapDBContext(options))
+            {
+                ICsvService csvService = new CsvService();
+                var service = new TimesheetService(context, csvService);
+                var currentDateTime = DateTime.Now;
+                var newTimesheet1 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
+                var newTimesheet2 = new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Beta", Description = "Developed new feature X", HoursWorked = 6 };
+                var newTimesheet3 = new Timesheet { UserName = "Jane Doe", Date = currentDateTime, Project = "Project Gamma", Description = "Developed new feature X", HoursWorked = 6 };
+
+                var result1 = await service.CreateTimesheet(newTimesheet1);
+                var result2 = await service.CreateTimesheet(newTimesheet2);
+                var result3 = await service.CreateTimesheet(newTimesheet3);
+                var result = await service.GetTimesheets();
+ 
+                Assert.NotNull(result.Result);
+   
+                Assert.Equal(3, result.Result.Count());
+            }
+        }
     }
 }

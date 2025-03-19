@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Service.Helpers;
+using Service.Interfaces;
 using Service.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Service.Services
 {
-    public class TimesheetService
+    public class TimesheetService : ITimesheetService
     {
         private readonly CmapDBContext _context;
         private readonly Interfaces.ICsvService _csvService;
@@ -19,6 +20,14 @@ namespace Service.Services
             _context = context;
             _csvService = csvService;
         }
+
+        public async Task<ServiceResults<IEnumerable<Timesheet>>> GetTimesheets()
+        {
+            var result = new ServiceResults<IEnumerable<Timesheet>>();
+            result.Result = await _context.Timesheets.ToListAsync();
+            return result;
+        }
+
 
         public async Task<ServiceResults<Timesheet>> CreateTimesheet(Timesheet timesheet)
         {

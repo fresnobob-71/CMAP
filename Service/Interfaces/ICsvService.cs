@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Service.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Service.Interfaces
 {
     public interface ICsvService
     {
+        Task<string> DownloadCsv(IEnumerable<Timesheet> timesheets);
     }
 }
