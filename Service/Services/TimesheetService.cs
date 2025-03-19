@@ -33,23 +33,6 @@ namespace Service.Services
         {
             var result = new ServiceResults<Timesheet>();
 
-            if (string.IsNullOrEmpty(timesheet.UserName))
-                result.Errors["UserName"] = "UserName name cannot be null or empty.";
-
-            if (string.IsNullOrEmpty(timesheet.Project))
-                result.Errors["Project"] = "Project name cannot be null or empty.";
-
-
-            if (string.IsNullOrEmpty(timesheet.Description))
-                result.Errors["Description"] = "Description name cannot be null or empty.";
-
-
-            if (timesheet.HoursWorked <= 0)
-                result.Errors["HoursWorked"] = "Hours Worked cannot be less than zero";
-
-            if (result.HasErrors)
-                return result;
-
             var totalHours = _context.Timesheets.Where(x => x.UserName == timesheet.UserName && x.Date.Date == timesheet.Date.Date).Sum(x => x.HoursWorked);
             timesheet.TotalHours = totalHours + timesheet.HoursWorked;
             _context.Add(timesheet);
