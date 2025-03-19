@@ -18,7 +18,7 @@ namespace UnitTests
             {
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
-                var currentDateTime = DateTime.Now;
+               
                 var newTimesheet = DataHelper.CreateTimesheet1();
 
                 // Act: Create the timesheet
@@ -44,7 +44,7 @@ namespace UnitTests
             {
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
-                var currentDateTime = DateTime.Now;
+               
                 var newTimesheet1 = DataHelper.CreateTimesheet1();
                 var newTimesheet2 = DataHelper.CreateTimesheet2();
 
@@ -72,7 +72,7 @@ namespace UnitTests
             {
                 ICsvService csvService = new CsvService();
                 var service = new TimesheetService(context, csvService);
-                var currentDateTime = DateTime.Now;
+                
                 var newTimesheet1 = DataHelper.CreateTimesheet1();
                 var newTimesheet2 = DataHelper.CreateTimesheet2();
                 var newTimesheet3 = DataHelper.CreateTimesheet3();
@@ -85,23 +85,72 @@ namespace UnitTests
                 Assert.Equal("John Smith", result1.Result.UserName);
                 Assert.Equal("Project Alpha", result1.Result.Project);
                 Assert.Equal("Developed new feature X", result1.Result.Description);
-                Assert.Equal(currentDateTime, result1.Result.Date);
+                Assert.Equal(DataHelper.FirstDate, result1.Result.Date);
                 Assert.Equal(10, result1.Result.TotalHours);
 
                 Assert.Equal("John Smith", result2.Result.UserName);
                 Assert.Equal("Project Beta", result2.Result.Project);
                 Assert.Equal("Developed new feature X", result2.Result.Description);
-                Assert.Equal(currentDateTime, result2.Result.Date);
+                Assert.Equal(DataHelper.FirstDate, result2.Result.Date);
                 Assert.Equal(10, result2.Result.TotalHours);
 
                 Assert.Equal("Jane Doe", result3.Result.UserName);
                 Assert.Equal("Project Gamma", result3.Result.Project);
                 Assert.Equal("Developed new feature X", result3.Result.Description);
-                Assert.Equal(currentDateTime, result3.Result.Date);
+                Assert.Equal(DataHelper.FirstDate, result3.Result.Date);
                 Assert.Equal(6, result3.Result.TotalHours);
             }
         }
-        
+
+        [Fact]
+        public async Task CreateTimesheet_AddTwoTimesheetsForTheSamePersonAndTwoForDifferentPersonOnDifferentDates()
+        {
+
+            var options = DBHelper.GetDBOptions();
+
+            using (var context = new CmapDBContext(options))
+            {
+                ICsvService csvService = new CsvService();
+                var service = new TimesheetService(context, csvService);
+                
+                var newTimesheet1 = DataHelper.CreateTimesheet1();
+                var newTimesheet2 = DataHelper.CreateTimesheet2();
+                var newTimesheet3 = DataHelper.CreateTimesheet3();
+                var newTimesheet4 = DataHelper.CreateTimesheet4();
+
+                var result1 = await service.CreateTimesheet(newTimesheet1);
+                var result2 = await service.CreateTimesheet(newTimesheet2);
+                var result3 = await service.CreateTimesheet(newTimesheet3);
+                var result4 = await service.CreateTimesheet(newTimesheet4);
+                Assert.NotNull(result1.Result);
+                Assert.Equal("John Smith", result1.Result.UserName);
+                Assert.Equal("Project Alpha", result1.Result.Project);
+                Assert.Equal("Developed new feature X", result1.Result.Description);
+                Assert.Equal(DataHelper.FirstDate, result1.Result.Date);
+                Assert.Equal(10, result1.Result.TotalHours);
+
+                Assert.Equal("John Smith", result2.Result.UserName);
+                Assert.Equal("Project Beta", result2.Result.Project);
+                Assert.Equal("Developed new feature X", result2.Result.Description);
+                Assert.Equal(DataHelper.FirstDate, result2.Result.Date);
+                Assert.Equal(10, result2.Result.TotalHours);
+
+                Assert.Equal("Jane Doe", result3.Result.UserName);
+                Assert.Equal("Project Gamma", result3.Result.Project);
+                Assert.Equal("Developed new feature X", result3.Result.Description);
+                Assert.Equal(DataHelper.FirstDate, result3.Result.Date);
+                Assert.Equal(6, result3.Result.TotalHours);
+
+                Assert.Equal("Jane Doe", result4.Result.UserName);
+                Assert.Equal("Project Gamma", result4.Result.Project);
+                Assert.Equal("Developed new feature Y", result4.Result.Description);
+                Assert.Equal(DataHelper.SecondDate, result4.Result.Date);
+                Assert.Equal(4, result4.Result.TotalHours);
+            }
+        }
+
+
+
         [Fact]
         public async Task GetTimesheet_AddThreeTimesheetsAndGetThreeTimesheets()
         {

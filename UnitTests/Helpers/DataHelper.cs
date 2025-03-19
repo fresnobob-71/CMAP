@@ -9,21 +9,29 @@ namespace UnitTests.Helpers
 {
     public class DataHelper
     {
-        public static DateTime currentDateTime = new DateTime(2025, 3, 19);
+        public static DateTime FirstDate = new DateTime(2025, 3, 19);
+        public static DateTime SecondDate = new DateTime(2025, 3, 20);
+
         public static Timesheet CreateTimesheet1()
         {
-            return new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
+            return new Timesheet { UserName = "John Smith", Date = FirstDate, Project = "Project Alpha", Description = "Developed new feature X", HoursWorked = 4 };
         }
 
         public static Timesheet CreateTimesheet2()
         {
-            return new Timesheet { UserName = "John Smith", Date = currentDateTime, Project = "Project Beta", Description = "Developed new feature X", HoursWorked = 6 };
+            return new Timesheet { UserName = "John Smith", Date = FirstDate, Project = "Project Beta", Description = "Developed new feature X", HoursWorked = 6 };
       
         }
 
         public static Timesheet CreateTimesheet3()
         {
-             return new Timesheet { UserName = "Jane Doe", Date = currentDateTime, Project = "Project Gamma", Description = "Developed new feature X", HoursWorked = 6 };
+             return new Timesheet { UserName = "Jane Doe", Date = FirstDate, Project = "Project Gamma", Description = "Developed new feature X", HoursWorked = 6 };
+
+        }
+
+        public static Timesheet CreateTimesheet4()
+        {
+            return new Timesheet { UserName = "Jane Doe", Date = SecondDate, Project = "Project Gamma", Description = "Developed new feature Y", HoursWorked = 4 };
 
         }
 
